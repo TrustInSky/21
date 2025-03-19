@@ -6,5 +6,7 @@ user_router = Router()
 
 
 @user_router.message(CommandStart)
-async def cmd_star(message: Message):
-    await message.answer
+async def cmd_start(message: Message):
+    chat_id = message.chat.id
+    
+    await message.answer(f"ID этого чата/группы: {chat_id}")
