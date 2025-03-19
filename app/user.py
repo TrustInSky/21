@@ -6,4 +6,5 @@ user_router = Router()
 
 
 @user_router.message(CommandStart)
-assync 
+async def cmd_star(message: Message):
+    await message.answer
