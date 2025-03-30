@@ -55,7 +55,7 @@ def get_admin_user_actions_menu(user_id: int, is_active: bool):
     )
     builder.button(
         text="💵 Изменить T-Point", 
-        callback_data=AdminCallback(action="edit_t_point", user_id=user_id)
+        callback_data=AdminCallback(action="edit_t_points", user_id=user_id)
     )
     
     if is_active:
