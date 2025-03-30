@@ -13,7 +13,7 @@ from app.keyboards.admin_keyboards import (
 )
 from app.services.admin_service import AdminService
 from app.services.user_list_service import UserListService
-from app.services.profile_service import ProfileService
+
 from app.database.models.user_model import UserRole
 
 admin_router = Router()
@@ -263,18 +263,3 @@ async def process_t_points(message: Message, state: FSMContext):
         return
     
     await state.clear()
-
-# Вспомогательные функции
-async def show_user_info_after_edit(message: Message, user_id: int):
-    """Показывает обновленную информацию о пользователе после редактирования"""
-    user_info = await AdminService.get_user_info(user_id)
-    if not user_info:
-        await message.answer("Ошибка: пользователь не найден")
-        return
-    
-    info_text = ProfileService.format_admin_profile_text(user_info)
-    await message.answer(
-        info_text,
-        reply_markup=get_admin_user_actions_menu(user_id, user_info['is_active']),
-        parse_mode="HTML"
-    )

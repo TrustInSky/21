@@ -12,33 +12,34 @@ def get_admin_user_management_menu():
 def get_user_list_markup(users: list, show_active: bool = True, page: int = 0, per_page: int = 10):
     builder = InlineKeyboardBuilder()
     
-    # Добавляем кнопки пользователей
-    for user in users[page*per_page : (page+1)*per_page]:
+    # Добавляем кнопки пользователей (имя или username)
+    for user in users[page * per_page: (page + 1) * per_page]:
         builder.button(
             text=f"{user.name or user.username or f'ID {user.telegram_id}'}",
             callback_data=AdminCallback(action="user_info", user_id=user.telegram_id)
         )
     
     # Добавляем кнопки пагинации
+    pagination_buttons = []
     if page > 0:
-        builder.button(
-            text="⬅️ Назад",
-            callback_data=AdminCallback(action="prev_page", user_id=page-1)
+        pagination_buttons.append(
+            ("⬅️ Назад", AdminCallback(action="prev_page", page=page-1, show_active=show_active))
         )
     
-    if (page+1)*per_page < len(users):
-        builder.button(
-            text="Вперед ➡️",
-            callback_data=AdminCallback(action="next_page", user_id=page+1)
+    if (page + 1) * per_page < len(users):
+        pagination_buttons.append(
+            ("Вперед ➡️", AdminCallback(action="next_page", page=page+1, show_active=show_active))
         )
     
-    # Кнопка возврата
-    builder.button(
-        text="🔙 Назад",
-        callback_data=AdminCallback(action="user_list")
-    )
+    for text, callback_data in pagination_buttons:
+        builder.button(text=text, callback_data=callback_data)
     
-    builder.adjust(1, 2, 1)  # Пользователи по одному, пагинация в ряд, назад отдельно
+    # Кнопка возврата в главное меню управления пользователями
+    builder.button(text="🔙 Назад", callback_data=AdminCallback(action="user_list"))
+    
+    # Регулируем расположение кнопок: список пользователей, затем пагинация в одной строке, затем кнопка "Назад"
+    builder.adjust(1, len(pagination_buttons), 1)
+    
     return builder.as_markup()
 
 def get_admin_user_actions_menu(user_id: int, is_active: bool):
